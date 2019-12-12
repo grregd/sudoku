@@ -19,7 +19,12 @@ class GameOfSudokuModel: public QAbstractTableModel
     Q_PROPERTY(QColor textSameValueColor)
     Q_PROPERTY(QColor fillSameValueColor MEMBER m_fillSameValueColor)
 
+    Q_PROPERTY(bool helpersVisible MEMBER m_helpersVisible NOTIFY onhelpersVisibleChanged)
+
     Q_ENUMS(Roles)
+
+public slots:
+    void onhelpersVisibleChanged();
 public:
     enum Roles {
         CellRole,
@@ -55,17 +60,18 @@ public:
     Q_INVOKABLE void insert(const QVariant & nativeText);
 
 private:
+    // properties
     QColor m_textColor;
     QColor m_textOriginColor;
     QColor m_fillColor;
     QColor m_fillSelectedColor;
     QColor m_fillSameValueColor;
+    bool m_helpersVisible;
 
     GameOfSudoku m_game;
     GameOfSudoku m_gameOrigin;
     GameOfSudoku m_gameSolution;
-    int m_selectedCell;
-
+    int m_selectedCell = 0;
 };
 
 

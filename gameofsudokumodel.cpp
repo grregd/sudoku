@@ -5,6 +5,11 @@
 #include <QDebug>
 
 
+void GameOfSudokuModel::onhelpersVisibleChanged()
+{
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
 GameOfSudokuModel::GameOfSudokuModel()
 {
 //    m_game.read(
@@ -79,7 +84,8 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
         {
             return m_fillSelectedColor;
         }
-        else if ((selectedValue != 0) &&
+        else if (m_helpersVisible &&
+                 (selectedValue != 0) &&
                  (currentValue != 0 ||
                  m_game.colHasValue(index.column(), selectedValue) ||
                  m_game.rowHasValue(index.row(), selectedValue) ||
@@ -175,3 +181,4 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
 
     qDebug() << nativeText;
 }
+

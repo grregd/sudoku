@@ -86,6 +86,12 @@ ApplicationWindow {
         RowLayout {
             anchors.centerIn: parent
 
+
+            CheckBox {
+                text: qsTr("Pomoce")
+                checked: gameOfSudokuModel.helpersVisible
+                onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
+            }
             Button {
                 text: qsTr("Podpowiedz")
                 onClicked: gameOfSudokuModel.showHint()
