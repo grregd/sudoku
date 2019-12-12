@@ -11,6 +11,8 @@ ApplicationWindow {
     height: 480
     title: qsTr("Game of Sudoku")
 
+    property var hintCountLeft: 3
+
     Grid {
         anchors.fill: parent
         rows: 3; columns: 3; spacing: 0
@@ -93,8 +95,20 @@ ApplicationWindow {
                 onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
             }
             Button {
-                text: qsTr("Podpowiedz")
-                onClicked: gameOfSudokuModel.showHint()
+                text: qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+                onClicked: {
+                    if (hintCountLeft > 0)
+                    {
+                        if (gameOfSudokuModel.showHint())
+                        {
+                            --hintCountLeft;
+                            text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+
+                            if (hintCountLeft == 0)
+                                enabled = false;
+                        }
+                    }
+                }
             }
             Button {
                 text: qsTr("Nowa gra")

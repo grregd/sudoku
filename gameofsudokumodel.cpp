@@ -147,14 +147,14 @@ void GameOfSudokuModel::selectCell(const QVariant & indexValue)
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 }
 
-void GameOfSudokuModel::showHint()
+bool GameOfSudokuModel::showHint()
 {
     auto row = m_selectedCell%9;
     auto col = m_selectedCell/9;
 
     if (m_game.at(row, col) != 0)
     {
-        return ;
+        return false;
     }
 
     GameOfSudoku tmp = m_game;
@@ -163,6 +163,8 @@ void GameOfSudokuModel::showHint()
     m_game.at(row, col) = tmp.at(row, col);
 
     emit dataChanged(index(row, col), index(row, col));
+
+    return true;
 }
 
 void GameOfSudokuModel::insert(const QVariant &nativeText)

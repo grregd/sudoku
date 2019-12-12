@@ -56,7 +56,7 @@ public:
     Q_INVOKABLE void solve(/*std::function<void(int, int, GameOfSudoku::GridData::value_type)> tryCallback
                            = [](int, int, GameOfSudoku::GridData::value_type){}*/);
     Q_INVOKABLE void selectCell(const QVariant & indexValue);
-    Q_INVOKABLE void showHint();
+    Q_INVOKABLE bool showHint();
     Q_INVOKABLE void insert(const QVariant & nativeText);
 
 private:
