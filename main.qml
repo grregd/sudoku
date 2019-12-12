@@ -78,6 +78,10 @@ ApplicationWindow {
         Shortcut { sequence: "8";  onActivated: gameOfSudokuModel.insert(portableText) }
         Shortcut { sequence: "9";  onActivated: gameOfSudokuModel.insert(portableText) }
         Shortcut { sequence: "0";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "Left";  onActivated: gameOfSudokuModel.moveLeft() }
+        Shortcut { sequence: "Right";  onActivated: gameOfSudokuModel.moveRight() }
+        Shortcut { sequence: "Up";  onActivated: gameOfSudokuModel.moveUp() }
+        Shortcut { sequence: "Down";  onActivated: gameOfSudokuModel.moveDown() }
 
         model: GameOfSudokuModel {
             id: gameOfSudokuModel

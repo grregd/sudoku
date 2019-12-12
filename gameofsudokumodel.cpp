@@ -223,3 +223,38 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
     }
 }
 
+void GameOfSudokuModel::moveLeft()
+{
+    m_selectedCell = (m_selectedCell+81-9)%81;
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
+void GameOfSudokuModel::moveRight()
+{
+    m_selectedCell = (m_selectedCell+81+9)%81;
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
+void GameOfSudokuModel::moveUp()
+{
+    m_selectedCell+=81;
+    m_selectedCell -= 1;
+    if (m_selectedCell % 9 == 8)
+        m_selectedCell += 9;
+    m_selectedCell %= 81;
+
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
+void GameOfSudokuModel::moveDown()
+{
+    m_selectedCell+=81;
+    m_selectedCell += 1;
+    if (m_selectedCell % 9 == 0)
+        m_selectedCell -= 9;
+    m_selectedCell %= 81;
+
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
+
