@@ -56,6 +56,18 @@ ApplicationWindow {
             }
         }
 
+        // NOTE: when 'sequences' is used both 'portableText' and 'nativetext' are empty
+        Shortcut { sequence: "1";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "2";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "3";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "4";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "5";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "6";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "7";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "8";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "9";  onActivated: gameOfSudokuModel.insert(portableText) }
+        Shortcut { sequence: "0";  onActivated: gameOfSudokuModel.insert(portableText) }
+
         model: GameOfSudokuModel {
             id: gameOfSudokuModel
             textColor: "blue"

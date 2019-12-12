@@ -52,6 +52,7 @@ public:
                            = [](int, int, GameOfSudoku::GridData::value_type){}*/);
     Q_INVOKABLE void selectCell(const QVariant & indexValue);
     Q_INVOKABLE void showHint();
+    Q_INVOKABLE void insert(const QVariant & nativeText);
 
 private:
     QColor m_textColor;
@@ -62,6 +63,7 @@ private:
 
     GameOfSudoku m_game;
     GameOfSudoku m_gameOrigin;
+    GameOfSudoku m_gameSolution;
     int m_selectedCell;
 
 };

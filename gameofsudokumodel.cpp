@@ -30,6 +30,9 @@ GameOfSudokuModel::GameOfSudokuModel()
                 " 7 _ _ 3 _ _ _ 1 _ "
                 );
     m_gameOrigin = m_game;
+
+    m_gameSolution = m_game;
+    m_gameSolution.solve();
 }
 
 int GameOfSudokuModel::rowCount(const QModelIndex &/*parent*/) const
@@ -51,12 +54,17 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
     auto currentValue = m_game.at(index.row(), index.column());
     auto selectedValue = m_game.at(m_selectedCell%9, m_selectedCell/9);
     auto originalValue = m_gameOrigin.at(index.row(), index.column());
+    auto correctValue = m_gameSolution.at(index.row(), index.column());
 
     if (role == TextColorRole)
     {
         if (currentValue == originalValue)
         {
             return m_textOriginColor;
+        }
+        else if (currentValue != correctValue)
+        {
+            return QColor(Qt::red);
         }
         else
         {
@@ -149,4 +157,21 @@ void GameOfSudokuModel::showHint()
     m_game.at(row, col) = tmp.at(row, col);
 
     emit dataChanged(index(row, col), index(row, col));
+}
+
+void GameOfSudokuModel::insert(const QVariant &nativeText)
+{
+    auto row = m_selectedCell%9;
+    auto col = m_selectedCell/9;
+
+    if (m_gameOrigin.at(row, col) != 0)
+    {
+        return ;
+    }
+
+    m_game.at(row, col) = nativeText.toInt();
+
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
+
+    qDebug() << nativeText;
 }
