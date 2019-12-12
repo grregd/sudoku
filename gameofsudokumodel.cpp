@@ -217,7 +217,8 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 
-    if (nativeText.toInt() != m_gameSolution.at(row, col))
+    if (nativeText.toInt() != 0 &&
+        nativeText.toInt() != m_gameSolution.at(row, col))
     {
         emit wrongTry();
     }
