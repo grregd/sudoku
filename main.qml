@@ -75,6 +75,10 @@ ApplicationWindow {
             anchors.centerIn: parent
 
             Button {
+                text: qsTr("Podpowiedz")
+                onClicked: gameOfSudokuModel.showHint()
+            }
+            Button {
                 text: qsTr("Nowa gra")
                 onClicked: gameOfSudokuModel.newBoard()
             }

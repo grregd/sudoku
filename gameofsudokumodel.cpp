@@ -88,12 +88,12 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
     return currentValue;
 }
 
-bool GameOfSudokuModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool GameOfSudokuModel::setData(const QModelIndex &/*index*/, const QVariant &/*value*/, int /*role*/)
 {
     return false;
 }
 
-Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &index) const
+Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &/*index*/) const
 {
     return Qt::NoItemFlags;
 }
@@ -125,10 +125,28 @@ void GameOfSudokuModel::solve(/*std::function<void (int, int, GameOfSudoku::Grid
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 }
 
-void GameOfSudokuModel::selectCell(const QVariant & value)
+void GameOfSudokuModel::selectCell(const QVariant & indexValue)
 {
-    qDebug() << __FUNCTION__ << value;
+    qDebug() << __FUNCTION__ << indexValue;
 //    auto save = m_selectedCell;
-    m_selectedCell = value.toInt();
+    m_selectedCell = indexValue.toInt();
     emit dataChanged(index(0, 0), index(9-1, 9-1));
+}
+
+void GameOfSudokuModel::showHint()
+{
+    auto row = m_selectedCell%9;
+    auto col = m_selectedCell/9;
+
+    if (m_game.at(row, col) != 0)
+    {
+        return ;
+    }
+
+    GameOfSudoku tmp = m_game;
+    tmp.solve();
+
+    m_game.at(row, col) = tmp.at(row, col);
+
+    emit dataChanged(index(row, col), index(row, col));
 }

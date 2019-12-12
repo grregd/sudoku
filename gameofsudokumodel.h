@@ -50,7 +50,8 @@ public:
     Q_INVOKABLE void newBoard();
     Q_INVOKABLE void solve(/*std::function<void(int, int, GameOfSudoku::GridData::value_type)> tryCallback
                            = [](int, int, GameOfSudoku::GridData::value_type){}*/);
-    Q_INVOKABLE void selectCell(const QVariant & value);
+    Q_INVOKABLE void selectCell(const QVariant & indexValue);
+    Q_INVOKABLE void showHint();
 
 private:
     QColor m_textColor;

@@ -22,6 +22,7 @@ public:
     static void print(const GridData & grid);
 
     GridData::value_type at(int row, int col) const;
+    GridData::value_type &at(int row, int col);
 
     bool rowHasValue(int row, GridData::value_type value) const;
     bool colHasValue(int col, GridData::value_type value) const;

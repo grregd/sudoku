@@ -58,6 +58,11 @@ GameOfSudoku::GridData::value_type GameOfSudoku::at(int row, int col) const
     return m_grid[row*9+col];
 }
 
+GameOfSudoku::GridData::value_type &GameOfSudoku::at(int row, int col)
+{
+    return m_grid[row*9+col];
+}
+
 bool GameOfSudoku::rowHasValue(int row, GridData::value_type value) const
 {
     return GameOfSudoku::rowHasValue(row, value, m_grid);
