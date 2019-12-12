@@ -10,12 +10,22 @@
 class GameOfSudoku
 {
 public:
+    class MaxNumberOfSolutionExceeded: public std::runtime_error
+    {
+    public:
+        MaxNumberOfSolutionExceeded(const std::string & v)
+            : std::runtime_error(v)
+        {}
+    };
+
     using GridData = std::array<unsigned short, 9*9>;
     using TryCallbackType = std::function<void(GridData::size_type, GridData::size_type, GridData::value_type)>;
 
     GameOfSudoku();
-    void generateBoard();
-    void solve(TryCallbackType tryCallback
+    GameOfSudoku(const GameOfSudoku::GridData & initialGrid);
+
+    void generateBoard(int numberOfClues);
+    void solve(std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback
                = [](int, int, GridData::value_type){});
     void print();
     void read(const QString & board);
@@ -37,7 +47,7 @@ private:
     static bool colHasValue(GridData::size_type col, GridData::value_type value, const GridData & grid);
     static bool blockHasValue(GridData::size_type row, GridData::size_type col, GridData::value_type value, const GridData & grid);
 
-    static bool solve(GridData & grid, TryCallbackType tryCallback
+    static bool solve(GridData & grid, std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback
                       = [](int, int, GridData::value_type){});
 
 private:

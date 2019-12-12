@@ -104,6 +104,7 @@ ApplicationWindow {
                 onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
             }
             Button {
+                id: buttonHints
                 text: qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
                 onClicked: {
                     if (hintCountLeft > 0)
@@ -121,7 +122,12 @@ ApplicationWindow {
             }
             Button {
                 text: qsTr("Nowa gra")
-                onClicked: gameOfSudokuModel.newBoard()
+                onClicked: {
+                    hintCountLeft = 3
+                    wrongTriesCount = 0
+                    buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+                    gameOfSudokuModel.newBoard()
+                }
             }
             Button {
                 text: qsTr("Rozwiąż")

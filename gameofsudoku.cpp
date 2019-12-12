@@ -1,20 +1,31 @@
 #include "gameofsudoku.h"
 
 #include <random>
+#include <stdexcept>
 
 #include <QStringList>
 
 #include <QDebug>
+
+
 
 GameOfSudoku::GameOfSudoku()
 {
     m_grid.fill(0);
 }
 
-void GameOfSudoku::generateBoard()
+GameOfSudoku::GameOfSudoku(const GameOfSudoku::GridData &initialGrid)
+    : m_grid(initialGrid)
+{
+
+}
+
+void GameOfSudoku::generateBoard(int numberOfClues)
 {
     m_grid.fill(0);
-    solve();
+
+    std::vector<GameOfSudoku::GridData> solutions;
+    solve(solutions);
 
     std::vector<GridData::size_type> toRemove(81);
     std::iota(toRemove.begin(), toRemove.end(), 1);
@@ -23,15 +34,17 @@ void GameOfSudoku::generateBoard()
     g.seed(time(nullptr));
     std::shuffle(toRemove.begin(), toRemove.end(), g);
 
-    auto toLeave = 34;
+    auto toLeave = numberOfClues;
     toRemove.erase(toRemove.end()-toLeave, toRemove.end());
     for (auto index: toRemove)
         m_grid[index] = 0;
+
+    print();
 }
 
-void GameOfSudoku::solve(TryCallbackType tryCallback)
+void GameOfSudoku::solve(std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback)
 {
-    solve(m_grid, tryCallback);
+    solve(m_grid, solutions, tryCallback);
 }
 
 void GameOfSudoku::print()
@@ -145,8 +158,8 @@ bool GameOfSudoku::blockHasValue(GridData::size_type row, GridData::size_type co
     return false;
 }
 
-//static std::list<GameOfSudoku::GridData> solutions;
-bool GameOfSudoku::solve(GridData &grid, TryCallbackType tryCallback)
+;
+bool GameOfSudoku::solve(GridData &grid, std::vector<GridData> & solutions, TryCallbackType tryCallback)
 {
     GridData::size_type cellNum = 0;
     for (; cellNum < 9*9; ++cellNum)
@@ -175,12 +188,37 @@ bool GameOfSudoku::solve(GridData &grid, TryCallbackType tryCallback)
 //                        solutions.push_back(grid);
 //                        qDebug() << "found soluiton number" << solutions.size();
                         qDebug() << "found soluiton";
+                        if (solutions.capacity() > 0)
+                        {
+                            if (solutions.size() == solutions.capacity())
+                            {
+                                throw MaxNumberOfSolutionExceeded("MaxNumberOfSolutionExceeded");
+                            }
+
+                            solutions.emplace_back(grid);
+
+                            break;
+                        }
+
                         return true;
-//                        break;
+
+//                        if (solutions)
+//                        {
+//                            qDebug() << *solutions;
+//                            --*solutions;
+//                            qDebug() << *solutions;
+
+//                            if (*solutions < 0)
+//                            {
+//                            }
+//                            break;
+//                        }
+//                        else
+//                            return true;
                     }
                     else
                     {
-                        if (solve(grid, tryCallback))
+                        if (solve(grid, solutions, tryCallback))
                         {
                             return true;
                         }
