@@ -4,6 +4,27 @@
 
 #include <QDebug>
 
+class IndexAdapter
+{
+public:
+    IndexAdapter(const QModelIndex& taget)
+        : m_target(taget)
+    {
+    }
+
+    GameOfSudoku::GridData::size_type row() const
+    {
+        return static_cast<GameOfSudoku::GridData::size_type>(m_target.row());
+    }
+
+    GameOfSudoku::GridData::size_type column() const
+    {
+        return static_cast<GameOfSudoku::GridData::size_type>(m_target.column());
+    }
+
+private:
+    QModelIndex m_target;
+};
 
 void GameOfSudokuModel::onhelpersVisibleChanged()
 {
@@ -52,10 +73,12 @@ int GameOfSudokuModel::columnCount(const QModelIndex &/*parent*/) const
 
 QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
 {
-    auto currentValue = m_game.at(index.row(), index.column());
-    auto selectedValue = m_game.at(m_selectedCell%9, m_selectedCell/9);
-    auto originalValue = m_gameOrigin.at(index.row(), index.column());
-    auto correctValue = m_gameSolution.at(index.row(), index.column());
+    IndexAdapter indexAdapt(index);
+    auto currentValue = m_game.at(indexAdapt.row(), indexAdapt.column());
+    auto selectedValue = m_game.at(static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell%9),
+                                   static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell/9));
+    auto originalValue = m_gameOrigin.at(indexAdapt.row(), indexAdapt.column());
+    auto correctValue = m_gameSolution.at(indexAdapt.row(), indexAdapt.column());
 
     if (role == TextColorRole)
     {
@@ -83,9 +106,9 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
         else if (m_helpersVisible &&
                  (selectedValue != 0) &&
                  (currentValue != 0 ||
-                 m_game.colHasValue(index.column(), selectedValue) ||
-                 m_game.rowHasValue(index.row(), selectedValue) ||
-                 m_game.blockHasValue(index.row(), index.column(), selectedValue)))
+                 m_game.colHasValue(indexAdapt.column(), selectedValue) ||
+                 m_game.rowHasValue(indexAdapt.row(), selectedValue) ||
+                 m_game.blockHasValue(indexAdapt.row(), indexAdapt.column(), selectedValue)))
         {
             return m_fillSameValueColor;
         }
@@ -143,8 +166,8 @@ void GameOfSudokuModel::selectCell(const QVariant & indexValue)
 
 bool GameOfSudokuModel::showHint()
 {
-    auto row = m_selectedCell%9;
-    auto col = m_selectedCell/9;
+    auto row = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell%9);
+    auto col = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell/9);
 
     if (m_game.at(row, col) != 0)
     {
@@ -160,15 +183,15 @@ bool GameOfSudokuModel::showHint()
 
 void GameOfSudokuModel::insert(const QVariant &nativeText)
 {
-    auto row = m_selectedCell%9;
-    auto col = m_selectedCell/9;
+    auto row = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell%9);
+    auto col = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell/9);
 
     if (m_gameOrigin.at(row, col) != 0)
     {
         return ;
     }
 
-    m_game.at(row, col) = nativeText.toInt();
+    m_game.at(row, col) = static_cast<GameOfSudoku::GridData::value_type>(nativeText.toInt());
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 
