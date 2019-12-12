@@ -1,5 +1,7 @@
 #include "gameofsudoku.h"
 
+#include <random>
+
 #include <QStringList>
 
 #include <QDebug>
@@ -7,12 +9,24 @@
 GameOfSudoku::GameOfSudoku()
 {
     m_grid.fill(0);
-    m_grid[0] = 9;
 }
 
 void GameOfSudoku::generateBoard()
 {
     m_grid.fill(0);
+    solve();
+
+    std::vector<GridData::size_type> toRemove(81);
+    std::iota(toRemove.begin(), toRemove.end(), 1);
+    std::random_device rd;
+    std::mt19937 g(rd());
+    g.seed(time(nullptr));
+    std::shuffle(toRemove.begin(), toRemove.end(), g);
+
+    auto toLeave = 34;
+    toRemove.erase(toRemove.end()-toLeave, toRemove.end());
+    for (auto index: toRemove)
+        m_grid[index] = 0;
 }
 
 void GameOfSudoku::solve(TryCallbackType tryCallback)
@@ -131,7 +145,7 @@ bool GameOfSudoku::blockHasValue(GridData::size_type row, GridData::size_type co
     return false;
 }
 
-static std::list<GameOfSudoku::GridData> solutions;
+//static std::list<GameOfSudoku::GridData> solutions;
 bool GameOfSudoku::solve(GridData &grid, TryCallbackType tryCallback)
 {
     GridData::size_type cellNum = 0;
@@ -142,7 +156,13 @@ bool GameOfSudoku::solve(GridData &grid, TryCallbackType tryCallback)
 
         if (grid[cellNum] == 0)
         {
-            for (GridData::value_type value = 1; value <= 9; ++value)
+            std::vector<GridData::value_type> values(9);
+            std::iota(values.begin(), values.end(), 1);
+            std::random_device rd;
+            std::mt19937 g(rd());
+            g.seed(time(nullptr));
+            std::shuffle(values.begin(), values.end(), g);
+            for (auto value: values)
             {
                 if (!rowHasValue(row, value, grid) &&
                     !colHasValue(col, value, grid) &&
@@ -152,8 +172,9 @@ bool GameOfSudoku::solve(GridData &grid, TryCallbackType tryCallback)
                     grid[cellNum] = value;
                     if (isFull(grid))
                     {
-                        solutions.push_back(grid);
-                        qDebug() << "found soluiton number" << solutions.size();
+//                        solutions.push_back(grid);
+//                        qDebug() << "found soluiton number" << solutions.size();
+                        qDebug() << "found soluiton";
                         return true;
 //                        break;
                     }

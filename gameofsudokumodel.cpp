@@ -44,21 +44,18 @@ GameOfSudokuModel::GameOfSudokuModel()
 //                " _ _ _ _ _ _ 3 9 6 "
 //                " 7 5 3 _ _ _ _ _ _ "
 //                );
-    m_game.read(
-                " 9 _ 4 6 _ 5 1 _ _ "
-                " 2 _ _ _ _ _ _ _ _ "
-                " 8 _ _ _ 1 _ _ _ _ "
-                " _ _ _ 9 _ _ _ _ _ "
-                " 6 2 7 _ _ _ _ 4 _ "
-                " _ _ _ _ _ 3 _ _ 6 "
-                " _ 1 _ _ 6 _ 4 2 _ "
-                " 4 _ _ _ _ 7 _ 8 _ "
-                " 7 _ _ 3 _ _ _ 1 _ "
-                );
-    m_gameOrigin = m_game;
-
-    m_gameSolution = m_game;
-    m_gameSolution.solve();
+//    m_game.read(
+//                " 9 _ 4 6 _ 5 1 _ _ "
+//                " 2 _ _ _ _ _ _ _ _ "
+//                " 8 _ _ _ 1 _ _ _ _ "
+//                " _ _ _ 9 _ _ _ _ _ "
+//                " 6 2 7 _ _ _ _ 4 _ "
+//                " _ _ _ _ _ 3 _ _ 6 "
+//                " _ 1 _ _ 6 _ 4 2 _ "
+//                " 4 _ _ _ _ 7 _ 8 _ "
+//                " 7 _ _ 3 _ _ _ 1 _ "
+//                );
+    newBoard();
 }
 
 int GameOfSudokuModel::rowCount(const QModelIndex &/*parent*/) const
@@ -133,7 +130,11 @@ Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &/*index*/) const
 
 void GameOfSudokuModel::newBoard()
 {
+    m_game.generateBoard();
+    m_gameOrigin = m_game;
+    m_gameSolution.solve();
 
+    emit dataChanged(index(0, 0), index(9-1, 9-1));
 }
 
 //std::thread t;
