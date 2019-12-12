@@ -95,8 +95,15 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
 
     if (role == FillColorRole)
     {
-        if (index.row() == m_selectedCell%9 ||
+        if (!m_helpersVisible &&
+            index.row() == m_selectedCell%9 &&
             index.column() == m_selectedCell/9)
+        {
+            return m_fillSelectedColor;
+        }
+        else if (m_helpersVisible &&
+                 (index.row() == m_selectedCell%9 ||
+                 index.column() == m_selectedCell/9))
         {
             return m_fillSelectedColor;
         }
