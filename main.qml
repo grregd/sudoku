@@ -6,12 +6,21 @@ import QtQuick.Layouts 1.3
 import GameOfSudokuModel 1.0
 
 ApplicationWindow {
+    id: mainWin
     visible: true
     width: 640
     height: 480
     title: qsTr("Game of Sudoku")
 
     property var hintCountLeft: 3
+    property var wrongTriesCount: 0
+
+
+    function handleWrongTry()
+    {
+        ++wrongTriesCount;
+        wrongAnswersCount.text = wrongTriesCount;
+    }
 
     Grid {
         anchors.fill: parent
@@ -77,6 +86,7 @@ ApplicationWindow {
             fillColor: "#c0c0c0"//"lightgrey"
             fillSelectedColor: "#a0a0a4"//"grey"
             fillSameValueColor: "#808080"//"darkgrey"
+            onWrongTry: mainWin.handleWrongTry()
         }
     }
 
@@ -87,7 +97,6 @@ ApplicationWindow {
 
         RowLayout {
             anchors.centerIn: parent
-
 
             CheckBox {
                 text: qsTr("Pomoce")
@@ -117,6 +126,19 @@ ApplicationWindow {
             Button {
                 text: qsTr("Rozwiąż")
                 onClicked: gameOfSudokuModel.solve()
+            }
+            Label {
+                visible: wrongTriesCount > 0
+                text: qsTr("Błędy: ")
+                color: "red"
+                font.pointSize: 20;
+            }
+            Label {
+                id: wrongAnswersCount
+                visible: wrongTriesCount > 0
+                text: "0"
+                color: "red"
+                font.pointSize: 20;
             }
         }
     }

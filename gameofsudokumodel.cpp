@@ -52,10 +52,6 @@ int GameOfSudokuModel::columnCount(const QModelIndex &/*parent*/) const
 
 QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
 {
-//    qDebug() << __FUNCTION__ << index << role;
-//    if (!index.isValid() || role != CellRole)
-//        return QVariant();
-
     auto currentValue = m_game.at(index.row(), index.column());
     auto selectedValue = m_game.at(m_selectedCell%9, m_selectedCell/9);
     auto originalValue = m_gameOrigin.at(index.row(), index.column());
@@ -141,8 +137,6 @@ void GameOfSudokuModel::solve(/*std::function<void (int, int, GameOfSudoku::Grid
 
 void GameOfSudokuModel::selectCell(const QVariant & indexValue)
 {
-    qDebug() << __FUNCTION__ << indexValue;
-//    auto save = m_selectedCell;
     m_selectedCell = indexValue.toInt();
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 }
@@ -157,10 +151,7 @@ bool GameOfSudokuModel::showHint()
         return false;
     }
 
-    GameOfSudoku tmp = m_game;
-    tmp.solve();
-
-    m_game.at(row, col) = tmp.at(row, col);
+    m_game.at(row, col) = m_gameSolution.at(row, col);
 
     emit dataChanged(index(row, col), index(row, col));
 
@@ -181,6 +172,9 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
 
-    qDebug() << nativeText;
+    if (nativeText.toInt() != m_gameSolution.at(row, col))
+    {
+        emit wrongTry();
+    }
 }
 

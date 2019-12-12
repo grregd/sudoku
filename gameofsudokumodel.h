@@ -23,8 +23,12 @@ class GameOfSudokuModel: public QAbstractTableModel
 
     Q_ENUMS(Roles)
 
+signals:
+    void wrongTry();
+
 public slots:
     void onhelpersVisibleChanged();
+
 public:
     enum Roles {
         CellRole,
