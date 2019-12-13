@@ -24,7 +24,7 @@ public:
     GameOfSudoku();
     GameOfSudoku(const GameOfSudoku::GridData & initialGrid);
 
-    void generateBoard(int numberOfClues);
+    bool generateBoard(int numberOfClues);
     void solve(std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback
                = [](int, int, GridData::value_type){});
     void print();
@@ -39,9 +39,6 @@ public:
     bool colHasValue(GridData::size_type col, GridData::value_type value) const;
     bool blockHasValue(GridData::size_type row, GridData::size_type col, GridData::value_type value) const;
 
-private:
-    void makeFullRandom();
-
     static bool isFull(const GridData & grid);
     static bool rowHasValue(GridData::size_type row, GridData::value_type value, const GridData & grid);
     static bool colHasValue(GridData::size_type col, GridData::value_type value, const GridData & grid);
@@ -49,6 +46,9 @@ private:
 
     static bool solve(GridData & grid, std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback
                       = [](int, int, GridData::value_type){});
+
+private:
+    void makeFullRandom();
 
 private:
     GridData m_grid;

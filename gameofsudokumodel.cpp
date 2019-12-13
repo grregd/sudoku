@@ -137,28 +137,39 @@ Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &/*index*/) const
 
 void GameOfSudokuModel::newBoard()
 {
-    for (auto probes = 100; probes > 0; --probes)
+//    for (auto probes = 1000; probes > 0; --probes)
     {
-        qDebug() << "probe " << probes;
+//        qDebug() << "probe " << probes;
 
-        m_game.generateBoard(45);
+        m_game.generateBoard(25);
+
+//        if (!m_game.generateBoard(25))
+//            continue;
+
         m_gameOrigin = m_game;
         m_gameSolution = m_game;
 
+//        std::vector<GameOfSudoku::GridData> solutions;
+//        solutions.reserve(1);
+//        try {
+//            m_gameSolution.solve(solutions);
+//        }
+//        catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
+//            if (probes <= 1)
+//                throw;
+//            else
+//                continue;
+//        }
+
         std::vector<GameOfSudoku::GridData> solutions;
         solutions.reserve(1);
-        try {
-            m_gameSolution.solve(solutions);
+        m_gameSolution.solve(solutions);
+        if (solutions.size() != 1)
+        {
+            throw std::runtime_error("something went horribly wrong");
         }
-        catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
-            if (probes <= 1)
-                throw;
-            else
-                continue;
-        }
-
         m_gameSolution = GameOfSudoku(solutions.front());
-        break;
+//        break;
     }
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
