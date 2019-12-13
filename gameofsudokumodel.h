@@ -25,6 +25,7 @@ class GameOfSudokuModel: public QAbstractTableModel
 
 signals:
     void wrongTry();
+    void gameSolved();
 
 public slots:
     void onhelpersVisibleChanged();

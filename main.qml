@@ -15,11 +15,17 @@ ApplicationWindow {
     property var hintCountLeft: 3
     property var wrongTriesCount: 0
 
-
     function handleWrongTry()
     {
         ++wrongTriesCount;
         wrongAnswersCount.text = wrongTriesCount;
+    }
+
+    function handleGameSolved()
+    {
+        gameTimer.running = false;
+        buttonSolve.enabled = false;
+        buttonHints.enabled = false;
     }
 
     Grid {
@@ -93,6 +99,7 @@ ApplicationWindow {
             fillSelectedColor: "#a0a0a0"
             fillSameValueColor: "#c0c0c0"
             onWrongTry: mainWin.handleWrongTry()
+            onGameSolved: mainWin.handleGameSolved();
         }
     }
 
@@ -136,12 +143,15 @@ ApplicationWindow {
                 onClicked: {
                     hintCountLeft = 3
                     wrongTriesCount = 0
+                    buttonSolve.enabled = true
+                    buttonHints.enabled = true
                     buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
                     gameOfSudokuModel.newBoard()
                     gameTimer.running = true;
                 }
             }
             Button {
+                id: buttonSolve
                 text: qsTr("Rozwiąż")
                 onClicked: gameOfSudokuModel.solve()
             }

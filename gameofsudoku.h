@@ -47,6 +47,8 @@ public:
     static bool solve(GridData & grid, std::vector<GameOfSudoku::GridData> & solutions, TryCallbackType tryCallback
                       = [](int, int, GridData::value_type){});
 
+    bool operator==(const GameOfSudoku& other);
+
 private:
     void makeFullRandom();
 

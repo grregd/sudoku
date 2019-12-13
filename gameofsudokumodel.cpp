@@ -245,6 +245,11 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
     {
         emit wrongTry();
     }
+
+    if (m_game == m_gameSolution)
+    {
+        emit gameSolved();
+    }
 }
 
 void GameOfSudokuModel::moveLeft()

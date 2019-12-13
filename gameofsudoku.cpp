@@ -500,4 +500,9 @@ bool GameOfSudoku::solve(GridData &grid, std::vector<GridData> & solutions, TryC
     return false;
 }
 
+bool GameOfSudoku::operator==(const GameOfSudoku &other)
+{
+    return m_grid == other.m_grid;
+}
+
 
