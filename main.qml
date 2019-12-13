@@ -157,27 +157,14 @@ ApplicationWindow {
                 onClicked: gameOfSudokuModel.solve()
             }
             Label {
-                visible: wrongTriesCount > 0
-                text: qsTr("Błędy: ")
-                color: "red"
-                font.pointSize: 20;
-            }
-            Label {
-                id: wrongAnswersCount
-                visible: wrongTriesCount > 0
-                text: "0"
-                color: "red"
-                font.pointSize: 20;
-            }
-            Label {
                 property var value: 0
                 id: timeElapsed
-                text: "0"
+                text: "Czas:    "
                 font.pointSize: 20;
 
                 function format() {
                     let tmp = value
-                    text = ""
+                    text = "Czas: "
                     if (tmp >= 24*60*60)
                         text += Math.floor(tmp/(24*60*60)) + "d"
                     tmp %= 24*60*60
@@ -200,6 +187,19 @@ ApplicationWindow {
                     value++
                     format()
                 }
+            }
+            Label {
+                visible: wrongTriesCount > 0
+                text: qsTr("Błędy: ")
+                color: "red"
+                font.pointSize: 20;
+            }
+            Label {
+                id: wrongAnswersCount
+                visible: wrongTriesCount > 0
+                text: "0"
+                color: "red"
+                font.pointSize: 20;
             }
         }
     }
