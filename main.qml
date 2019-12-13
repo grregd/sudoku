@@ -138,6 +138,7 @@ ApplicationWindow {
                     wrongTriesCount = 0
                     buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
                     gameOfSudokuModel.newBoard()
+                    gameTimer.running = true;
                 }
             }
             Button {
@@ -157,6 +158,46 @@ ApplicationWindow {
                 color: "red"
                 font.pointSize: 20;
             }
+            Label {
+                property var value: 0
+                id: timeElapsed
+                text: "0"
+                font.pointSize: 20;
+
+                function format() {
+                    let tmp = value
+                    text = ""
+                    if (tmp >= 24*60*60)
+                        text += Math.floor(tmp/(24*60*60)) + "d"
+                    tmp %= 24*60*60
+                    if (tmp >= 60*60)
+                        text += Math.floor(tmp/(60*60)) + "g"
+                    tmp %= (60*60)
+                    if (tmp >= 60)
+                        text += Math.floor(tmp/60) + "m"
+                    tmp %= 60
+                    text += tmp + "s"
+                }
+
+
+                function tickSecond() {
+                    value++
+                    format()
+                }
+
+                function reset() {
+                    value++
+                    format()
+                }
+            }
+        }
+    }
+
+    Item {
+        Timer {
+            id: gameTimer
+            interval: 1000; running: true; repeat: true
+            onTriggered: timeElapsed.tickSecond()
         }
     }
 }
