@@ -122,6 +122,11 @@ QVariant GameOfSudokuModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    if (role == SameValeRole)
+    {
+        return currentValue == selectedValue;
+    }
+
     return currentValue;
 }
 

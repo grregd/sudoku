@@ -56,7 +56,8 @@ ApplicationWindow {
                 Text {
                     text: model.value ? model.value : "";
                     color: model.textColor
-                    font.pointSize: 20;
+                    font.pointSize: helpers1.checked && model.sameValue ? 25 : 20;
+                    font.bold: helpers1.checked && model.sameValue
                     anchors.centerIn: parent
                 }
             }
@@ -88,9 +89,9 @@ ApplicationWindow {
             id: gameOfSudokuModel
             textColor: "blue"
             textOriginColor: "black"
-            fillColor: "#c0c0c0"//"lightgrey"
-            fillSelectedColor: "#a0a0a4"//"grey"
-            fillSameValueColor: "#808080"//"darkgrey"
+            fillColor: "#e0e0e0"
+            fillSelectedColor: "#a0a0a0"
+            fillSameValueColor: "#c0c0c0"
             onWrongTry: mainWin.handleWrongTry()
         }
     }
@@ -104,7 +105,12 @@ ApplicationWindow {
             anchors.centerIn: parent
 
             CheckBox {
-                text: qsTr("Pomoce")
+                id: helpers1
+                text: qsTr("Pomoce 1")
+                checked: false
+            }
+            CheckBox {
+                text: qsTr("Pomoce 2")
                 checked: gameOfSudokuModel.helpersVisible
                 onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
             }

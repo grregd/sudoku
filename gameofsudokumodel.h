@@ -33,7 +33,8 @@ public:
     enum Roles {
         CellRole,
         TextColorRole,
-        FillColorRole
+        FillColorRole,
+        SameValeRole
     };
 
     GameOfSudokuModel();
@@ -42,7 +43,8 @@ public:
         return {
             { CellRole, "value" },
             { TextColorRole, "textColor" },
-            { FillColorRole, "fillColor" }
+            { FillColorRole, "fillColor" },
+            { SameValeRole, "sameValue" }
         };
     }
 
