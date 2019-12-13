@@ -143,6 +143,7 @@ ApplicationWindow {
                 onClicked: {
                     hintCountLeft = 3
                     wrongTriesCount = 0
+                    timeElapsed.value = 0
                     buttonSolve.enabled = true
                     buttonHints.enabled = true
                     buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
