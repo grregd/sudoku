@@ -9,11 +9,12 @@ ApplicationWindow {
     id: mainWin
     visible: true
     width: 640
-    height: 640
+    height: 760
     title: qsTr("Game of Sudoku")
 
     property var hintCountLeft: 3
     property var wrongTriesCount: 0
+    property var theSize: 70
 
     function handleWrongTry()
     {
@@ -34,7 +35,7 @@ ApplicationWindow {
         Repeater {
             model: 9
             Rectangle {
-                width: 123; height: 123
+                width: 3*theSize+3; height: 3*theSize+3
                 border.width: 1
 //                color: "#000000ff"
             }
@@ -45,6 +46,8 @@ ApplicationWindow {
         id: tableView
         anchors.fill: parent
 
+        columnWidthProvider: function (column) { return theSize; }
+
         rowSpacing: 1
         columnSpacing: 1
 
@@ -53,8 +56,10 @@ ApplicationWindow {
 
         delegate: Rectangle {
             id: cell
-            implicitWidth: 40
-            implicitHeight: 40
+            implicitWidth: theSize
+            implicitHeight: theSize
+            width: theSize
+            height: theSize
 
             Rectangle {
                 anchors.fill: parent
@@ -62,7 +67,7 @@ ApplicationWindow {
                 Text {
                     text: model.value ? model.value : "";
                     color: model.textColor
-                    font.pointSize: helpers1.checked && model.sameValue ? 25 : 20;
+                    font.pointSize: helpers1.checked && model.sameValue ? 0.9*theSize : 0.8*theSize;
                     font.bold: helpers1.checked && model.sameValue
                     anchors.centerIn: parent
                 }
@@ -100,6 +105,16 @@ ApplicationWindow {
             fillSameValueColor: "#c0c0c0"
             onWrongTry: mainWin.handleWrongTry()
             onGameSolved: mainWin.handleGameSolved();
+        }
+        MouseArea {
+            anchors.fill: parent
+            onWheel: {
+                theSize += wheel.angleDelta.y/20
+                if (theSize < 10)
+                    theSize = 10
+                console.log(theSize)
+                tableView.forceLayout()
+            }
         }
     }
 

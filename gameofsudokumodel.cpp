@@ -146,7 +146,7 @@ void GameOfSudokuModel::newBoard()
     {
 //        qDebug() << "probe " << probes;
 
-        m_game.generateBoard(25);
+        m_game.generateBoard(35);
 
 //        if (!m_game.generateBoard(25))
 //            continue;
