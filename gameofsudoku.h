@@ -38,6 +38,7 @@ public:
     bool rowHasValue(GridData::size_type row, GridData::value_type value) const;
     bool colHasValue(GridData::size_type col, GridData::value_type value) const;
     bool blockHasValue(GridData::size_type row, GridData::size_type col, GridData::value_type value) const;
+    bool boardHasValue(GridData::value_type value) const;
 
     static bool isFull(const GridData & grid);
     static bool rowHasValue(GridData::size_type row, GridData::value_type value, const GridData & grid);

@@ -252,6 +252,12 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
     }
 }
 
+bool GameOfSudokuModel::hasAllNumbers(int number)
+{
+    return m_game.boardHasValue(
+                static_cast<GameOfSudoku::GridData::value_type>(number));
+}
+
 void GameOfSudokuModel::moveLeft()
 {
     m_selectedCell = (m_selectedCell+81-9)%81;

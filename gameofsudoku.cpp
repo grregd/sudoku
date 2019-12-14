@@ -124,6 +124,7 @@ bool BoardGenerator::tryGenerateTest(int toRemove)
 
 bool BoardGenerator::tryGenerate101computing(int toRemove)
 {
+    qDebug() << __FUNCTION__;
     srand(time(nullptr));
     int attempts = 30;
     while (attempts > 0)
@@ -381,6 +382,11 @@ bool GameOfSudoku::colHasValue(GridData::size_type col, GridData::value_type val
 bool GameOfSudoku::blockHasValue(GridData::size_type row, GridData::size_type col, GridData::value_type value) const
 {
     return GameOfSudoku::blockHasValue(row, col, value, m_grid);
+}
+
+bool GameOfSudoku::boardHasValue(GridData::value_type value) const
+{
+    return std::count(m_grid.begin(), m_grid.end(), value) == 9;
 }
 
 void GameOfSudoku::makeFullRandom()

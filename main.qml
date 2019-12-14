@@ -9,7 +9,7 @@ ApplicationWindow {
     id: mainWin
     visible: true
     width: 640
-    height: 480
+    height: 640
     title: qsTr("Game of Sudoku")
 
     property var hintCountLeft: 3
@@ -75,17 +75,17 @@ ApplicationWindow {
         }
 
         // NOTE: when 'sequences' is used both 'portableText' and 'nativetext' are empty
-        Shortcut { sequence: "1";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "2";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "3";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "4";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "5";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "6";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "7";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "8";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "9";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "0";  onActivated: gameOfSudokuModel.insert(portableText) }
-        Shortcut { sequence: "Esc";  onActivated: gameOfSudokuModel.insert("0") }
+        Shortcut { sequence: "1";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "2";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "3";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "4";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "5";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "6";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "7";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "8";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "9";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "0";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "Esc";  onActivated: { gameOfSudokuModel.insert("0"); numbersButtonsRepeater.updateState(); } }
         Shortcut { sequence: "Left";  onActivated: gameOfSudokuModel.moveLeft() }
         Shortcut { sequence: "Right";  onActivated: gameOfSudokuModel.moveRight() }
         Shortcut { sequence: "Up";  onActivated: gameOfSudokuModel.moveUp() }
@@ -105,101 +105,141 @@ ApplicationWindow {
 
     footer: Rectangle {
 
-        height: 50
+        height: 120
         color: "grey"
 
-        RowLayout {
-            anchors.centerIn: parent
+        GridLayout {
+//            anchors.centerIn: parent
+            anchors.fill: parent
+            rows: 2; columns: 1
 
-            CheckBox {
-                id: helpers1
-                text: qsTr("Pomoce 1")
-                checked: false
-            }
-            CheckBox {
-                text: qsTr("Pomoce 2")
-                checked: gameOfSudokuModel.helpersVisible
-                onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
-            }
-            Button {
-                id: buttonHints
-                text: qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
-                onClicked: {
-                    if (hintCountLeft > 0)
-                    {
-                        if (gameOfSudokuModel.showHint())
-                        {
-                            --hintCountLeft;
-                            text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
-
-                            if (hintCountLeft == 0)
-                                enabled = false;
+            RowLayout {
+                Layout.margins: 10
+                Grid {
+                    anchors.fill: parent
+                    rows: 1; columns: 9; spacing: 10
+                    Repeater {
+                        id: numbersButtonsRepeater
+                        model: 9
+                        Rectangle {
+                            color: "white"
+                            implicitWidth: 40; implicitHeight: 40
+                            Text {
+                                id: text
+                                enabled: parent.updateState()
+                                visible: enabled
+                                text: index+1
+                                font.pointSize: 25
+                                font.bold: true
+                                anchors.centerIn: parent
+                            }
+                            function updateState() {
+                                text.enabled =
+                                        text.visible =
+                                        !gameOfSudokuModel.hasAllNumbers(index+1)
+                            }
+                        }
+                        function updateState() {
+                            console.log("updateState")
+                            for(let i = 0; i < count; ++i)
+                                itemAt(i).updateState();
                         }
                     }
                 }
             }
-            Button {
-                text: qsTr("Nowa gra")
-                onClicked: {
-                    hintCountLeft = 3
-                    wrongTriesCount = 0
-                    timeElapsed.value = 0
-                    buttonSolve.enabled = true
-                    buttonHints.enabled = true
-                    buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
-                    gameOfSudokuModel.newBoard()
-                    gameTimer.running = true;
-                }
-            }
-            Button {
-                id: buttonSolve
-                text: qsTr("Rozwiąż")
-                onClicked: gameOfSudokuModel.solve()
-            }
-            Label {
-                property var value: 0
-                id: timeElapsed
-                text: "Czas:    "
-                font.pointSize: 20;
 
-                function format() {
-                    let tmp = value
-                    text = "Czas: "
-                    if (tmp >= 24*60*60)
-                        text += Math.floor(tmp/(24*60*60)) + "d"
-                    tmp %= 24*60*60
-                    if (tmp >= 60*60)
-                        text += Math.floor(tmp/(60*60)) + "g"
-                    tmp %= (60*60)
-                    if (tmp >= 60)
-                        text += Math.floor(tmp/60) + "m"
-                    tmp %= 60
-                    text += tmp + "s"
+            RowLayout {
+                Layout.margins: 10
+                CheckBox {
+                    id: helpers1
+                    text: qsTr("Pomoce 1")
+                    checked: false
                 }
+                CheckBox {
+                    text: qsTr("Pomoce 2")
+                    checked: gameOfSudokuModel.helpersVisible
+                    onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
+                }
+                Button {
+                    id: buttonHints
+                    text: qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+                    onClicked: {
+                        if (hintCountLeft > 0)
+                        {
+                            if (gameOfSudokuModel.showHint())
+                            {
+                                --hintCountLeft;
+                                text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+
+                                if (hintCountLeft == 0)
+                                    enabled = false;
+                            }
+                        }
+                    }
+                }
+                Button {
+                    text: qsTr("Nowa gra")
+                    onClicked: {
+                        hintCountLeft = 3
+                        wrongTriesCount = 0
+                        timeElapsed.value = 0
+                        buttonSolve.enabled = true
+                        buttonHints.enabled = true
+                        buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+                        gameOfSudokuModel.newBoard()
+                        gameTimer.running = true;
+                    }
+                }
+                Button {
+                    id: buttonSolve
+                    text: qsTr("Rozwiąż")
+                    onClicked: gameOfSudokuModel.solve()
+                }
+                Label {
+                    property var value: 0
+                    id: timeElapsed
+                    text: "Czas:    "
+                    font.pointSize: 20;
+
+                    function format() {
+                        let tmp = value
+                        text = "Czas: "
+                        if (tmp >= 24*60*60)
+                            text += Math.floor(tmp/(24*60*60)) + "d"
+                        tmp %= 24*60*60
+                        if (tmp >= 60*60)
+                            text += Math.floor(tmp/(60*60)) + "g"
+                        tmp %= (60*60)
+                        if (tmp >= 60)
+                            text += Math.floor(tmp/60) + "m"
+                        tmp %= 60
+                        text += tmp + "s"
+                    }
 
 
-                function tickSecond() {
-                    value++
-                    format()
-                }
+                    function tickSecond() {
+                        value++
+                        format()
+                    }
 
-                function reset() {
-                    value++
-                    format()
+                    function reset() {
+                        value++
+                        format()
+                    }
                 }
-            }
-            Label {
-                visible: wrongTriesCount > 0
-                text: qsTr("Błędy: ")
-                color: "red"
-                font.pointSize: 20;
-            }
-            Label {
-                id: wrongAnswersCount
-                visible: wrongTriesCount > 0
-                text: "0"
-                color: "red"
-                font.pointSize: 20;
+                Label {
+                    visible: wrongTriesCount > 0
+                    text: qsTr("Błędy: ")
+                    color: "red"
+                    font.pointSize: 20;
+                }
+                Label {
+                    id: wrongAnswersCount
+                    visible: wrongTriesCount > 0
+                    text: "0"
+                    color: "red"
+                    font.pointSize: 20;
+                }
             }
         }
     }
