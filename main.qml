@@ -178,10 +178,11 @@ ApplicationWindow {
                         text: qsTr("Pomoce 1")
                         checked: false
                     }
-                    CheckBox {
+                    Button {
                         text: qsTr("Pomoce 2")
                         checked: gameOfSudokuModel.helpersVisible
-                        onClicked: gameOfSudokuModel.helpersVisible = !gameOfSudokuModel.helpersVisible
+                        onPressed: gameOfSudokuModel.helpersVisible = true
+                        onReleased: gameOfSudokuModel.helpersVisible = false
                     }
                 }
                 RowLayout {
