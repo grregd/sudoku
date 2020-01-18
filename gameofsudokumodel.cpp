@@ -252,6 +252,21 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
     }
 }
 
+void GameOfSudokuModel::insertIfEmpty(const QVariant &nativeText)
+{
+    auto row = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell%9);
+    auto col = static_cast<GameOfSudoku::GridData::size_type>(m_selectedCell/9);
+
+    if ((nativeText.toInt() != 0) &&
+        (m_game.at(row, col) != 0) &&
+        (m_game.at(row, col) == m_gameSolution.at(row, col)))
+    {
+        return ;
+    }
+
+    insert(nativeText);
+}
+
 bool GameOfSudokuModel::hasAllNumbers(int number)
 {
     return m_game.boardHasValue(

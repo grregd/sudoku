@@ -80,17 +80,17 @@ ApplicationWindow {
         }
 
         // NOTE: when 'sequences' is used both 'portableText' and 'nativetext' are empty
-        Shortcut { sequence: "1";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "2";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "3";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "4";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "5";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "6";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "7";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "8";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "9";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "0";  onActivated: { gameOfSudokuModel.insert(portableText); numbersButtonsRepeater.updateState(); } }
-        Shortcut { sequence: "Esc";  onActivated: { gameOfSudokuModel.insert("0"); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "1";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "2";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "3";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "4";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "5";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "6";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "7";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "8";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "9";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "0";  onActivated: { gameOfSudokuModel.insertIfEmpty(portableText); numbersButtonsRepeater.updateState(); } }
+        Shortcut { sequence: "Esc";  onActivated: { gameOfSudokuModel.insertIfEmpty("0"); numbersButtonsRepeater.updateState(); } }
         Shortcut { sequence: "Left";  onActivated: gameOfSudokuModel.moveLeft() }
         Shortcut { sequence: "Right";  onActivated: gameOfSudokuModel.moveRight() }
         Shortcut { sequence: "Up";  onActivated: gameOfSudokuModel.moveUp() }
@@ -156,7 +156,7 @@ ApplicationWindow {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    gameOfSudokuModel.insert(index == 9 ? "0" : (index+1).toString());
+                                    gameOfSudokuModel.insertIfEmpty(index == 9 ? "0" : (index+1).toString());
                                     numbersButtonsRepeater.updateState();
                                 }
                             }

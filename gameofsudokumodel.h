@@ -65,6 +65,7 @@ public:
     Q_INVOKABLE void selectCell(const QVariant & indexValue);
     Q_INVOKABLE bool showHint();
     Q_INVOKABLE void insert(const QVariant & nativeText);
+    Q_INVOKABLE void insertIfEmpty(const QVariant & nativeText);
     Q_INVOKABLE bool hasAllNumbers(int);
     Q_INVOKABLE void moveLeft();
     Q_INVOKABLE void moveRight();
