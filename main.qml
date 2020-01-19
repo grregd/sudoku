@@ -132,10 +132,10 @@ ApplicationWindow {
                 Layout.margins: 10
                 Grid {
                     anchors.fill: parent
-                    rows: 1; columns: 10; spacing: 10
+                    rows: 2; columns: 10; spacing: 10
                     Repeater {
                         id: numbersButtonsRepeater
-                        model: 10
+                        model: 20
                         Rectangle {
                             color: "white"
                             implicitWidth: 26; implicitHeight: 26
@@ -143,20 +143,27 @@ ApplicationWindow {
                                 id: text
                                 enabled: parent.updateState()
                                 visible: enabled
-                                text: index == 9 ? "0" : index+1
+                                text: calcIndex() == 9 ? "0" : calcIndex()+1
                                 font.pointSize: 32-10
                                 font.bold: true
                                 anchors.centerIn: parent
                             }
+                            function calcIndex() {
+                                if (index == 9 || index == 10)
+                                    return 9;
+
+                                return index < 10 ? index : 19 - index
+                            }
+
                             function updateState() {
                                 text.enabled =
                                         text.visible =
-                                        !gameOfSudokuModel.hasAllNumbers(index+1)
+                                        !gameOfSudokuModel.hasAllNumbers(calcIndex()+1)
                             }
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    gameOfSudokuModel.insertIfEmpty(index == 9 ? "0" : (index+1).toString());
+                                    gameOfSudokuModel.insertIfEmpty(calcIndex() == 9 ? "0" : (calcIndex()+1).toString());
                                     numbersButtonsRepeater.updateState();
                                 }
                             }
@@ -172,7 +179,7 @@ ApplicationWindow {
 
             ColumnLayout {
                 RowLayout {
-                    Layout.margins: 10
+                    Layout.margins: 5
                     CheckBox {
                         id: helpers1
                         text: qsTr("Pomoce 1")
