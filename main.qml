@@ -98,7 +98,7 @@ ApplicationWindow {
 
         model: GameOfSudokuModel {
             id: gameOfSudokuModel
-            textColor: "blue"
+            textColor: "#0000aa"
             textOriginColor: "black"
             fillColor: "#e0e0e0"
             fillSelectedColor: "#a0a0a0"
