@@ -179,9 +179,15 @@ ApplicationWindow {
                         checked: false
                     }
                     Button {
-                        text: qsTr("Pomoce 2")
+                        property int countUsed: 0
+                        property string title: qsTr("Pomoce 2")
+                        text: title
                         checked: gameOfSudokuModel.helpersVisible
-                        onPressed: gameOfSudokuModel.helpersVisible = true
+                        onPressed: {
+                            gameOfSudokuModel.helpersVisible = true
+                            countUsed++
+                            text = title + " (" + countUsed + ")"
+                        }
                         onReleased: gameOfSudokuModel.helpersVisible = false
                     }
                 }
