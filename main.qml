@@ -5,6 +5,9 @@ import QtQuick.Layouts 1.3
 
 import GameOfSudokuModel 1.0
 
+import "."
+
+
 ApplicationWindow {
     id: mainWin
     visible: true
@@ -194,36 +197,26 @@ ApplicationWindow {
                         text: qsTr("Pomoce 1")
                         checked: false
                     }
-                    Button {
-                        property int countUsed: 0
-                        property string title: qsTr("Pomoce 2")
-                        text: title
+                    CountedButton {
+                        title: qsTr("Pomoce 2")
                         checked: gameOfSudokuModel.helpersVisible
-                        onPressed: {
-                            gameOfSudokuModel.helpersVisible = true
-                            countUsed++
-                            text = title + " (" + countUsed + ")"
-                        }
+                        onPressed: gameOfSudokuModel.helpersVisible = true
                         onReleased: gameOfSudokuModel.helpersVisible = false
-
                     }
                 }
                 RowLayout {
-                    Button {
+                    CountedButton {
                         id: buttonHints
-                        text: qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
-                        onClicked: {
-                            if (hintCountLeft > 0)
+                        title: qsTr("Podpowiedz")
+                        count: 3
+                        delta: -1
+                        onPressed: {
+                            if (!gameOfSudokuModel.showHint())
                             {
-                                if (gameOfSudokuModel.showHint())
-                                {
-                                    --hintCountLeft;
-                                    text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
-
-                                    if (hintCountLeft == 0)
-                                        enabled = false;
-                                }
+                                ++count;
                             }
+                            if (count == 0)
+                                enabled = false;
                         }
                     }
                     Button {
@@ -239,9 +232,9 @@ ApplicationWindow {
                             gameTimer.running = true;
                         }
                     }
-                    Button {
+                    CountedButton {
                         id: buttonSolve
-                        text: qsTr("Rozwiąż")
+                        title: qsTr("Rozwiąż")
                         onClicked: gameOfSudokuModel.solve()
                     }
                 }
