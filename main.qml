@@ -10,11 +10,17 @@ ApplicationWindow {
     visible: true
     width: 540
     height: 760
+//    visibility: "FullScreen"
     title: qsTr("Game of Sudoku")
 
     property var hintCountLeft: 3
     property var wrongTriesCount: 0
     property var theSize: 39
+
+    onWidthChanged: {
+        console.log("onWidthChanged")
+        theSize = width/9
+    }
 
     function handleWrongTry()
     {
@@ -46,7 +52,10 @@ ApplicationWindow {
         id: tableView
         anchors.fill: parent
 
-        columnWidthProvider: function (column) { return theSize; }
+        columnWidthProvider: function (column) {
+            console.log("columnWidthProvider: ", column, theSize)
+            return theSize;
+        }
 
         rowSpacing: 1
         columnSpacing: 1
@@ -132,13 +141,13 @@ ApplicationWindow {
                 Layout.margins: 10
                 Grid {
                     anchors.fill: parent
-                    rows: 2; columns: 10; spacing: 10
+                    rows: 2; columns: 10; spacing: 4
                     Repeater {
                         id: numbersButtonsRepeater
                         model: 20
                         Rectangle {
                             color: "white"
-                            implicitWidth: 26; implicitHeight: 26
+                            implicitWidth: ((theSize*9)-11*parent.spacing)/10; implicitHeight: 26
                             Text {
                                 id: text
                                 enabled: parent.updateState()
@@ -196,6 +205,7 @@ ApplicationWindow {
                             text = title + " (" + countUsed + ")"
                         }
                         onReleased: gameOfSudokuModel.helpersVisible = false
+
                     }
                 }
                 RowLayout {

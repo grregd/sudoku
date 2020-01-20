@@ -79,7 +79,7 @@ private:
     QColor m_fillColor;
     QColor m_fillSelectedColor;
     QColor m_fillSameValueColor;
-    bool m_helpersVisible;
+    bool m_helpersVisible = false;
 
     GameOfSudoku m_game;
     GameOfSudoku m_gameOrigin;
