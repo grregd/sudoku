@@ -253,6 +253,8 @@ ApplicationWindow {
                             gameTimer.running = true;
 
                             buttonHelpers2.reset()
+
+                            numbersButtonsRepeater.updateState()
                         }
                     }
                     CountedButton {
