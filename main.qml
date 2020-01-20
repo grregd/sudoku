@@ -91,6 +91,15 @@ ApplicationWindow {
                     font.bold: helpers1.checked && model.sameValue
                     anchors.centerIn: parent
                 }
+                Rectangle {
+                    anchors.centerIn: parent
+                    visible: helpers1.checked && model.sameValue && model.value !== 0
+                    width: parent.width+1
+                    height: parent.height+1
+                    color: "transparent"
+                    border.color: "black"
+                    border.width: 3
+                }
             }
 
             MouseArea {
@@ -171,6 +180,7 @@ ApplicationWindow {
                                 font.bold: true
                                 anchors.centerIn: parent
                             }
+
                             function calcIndex() {
                                 if (index == 9 || index == 10)
                                     return 9;
