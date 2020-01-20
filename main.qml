@@ -21,7 +21,8 @@ ApplicationWindow {
 
     onWidthChanged: {
         console.log("onWidthChanged")
-        theSize = width/9
+        theSize = width/9-1
+        tableView.forceLayout()
     }
 
     function handleWrongTry()
