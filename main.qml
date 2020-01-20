@@ -51,6 +51,15 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: diableHelper2Timer
+        interval: 3000
+        running: false
+        repeat: false
+
+        onTriggered: gameOfSudokuModel.helpersVisible = false
+    }
+
     TableView {
         id: tableView
         anchors.fill: parent
@@ -87,7 +96,10 @@ ApplicationWindow {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: gameOfSudokuModel.selectCell(index)
+                onClicked: {
+                    gameOfSudokuModel.helpersVisible = false
+                    gameOfSudokuModel.selectCell(index)
+                }
             }
         }
 
@@ -200,8 +212,14 @@ ApplicationWindow {
                     CountedButton {
                         title: qsTr("Pomoce 2")
                         checked: gameOfSudokuModel.helpersVisible
-                        onPressed: gameOfSudokuModel.helpersVisible = true
-                        onReleased: gameOfSudokuModel.helpersVisible = false
+                        onPressed: {
+                            gameOfSudokuModel.helpersVisible = true
+                            diableHelper2Timer.start()
+                        }
+                        onReleased: {
+                            gameOfSudokuModel.helpersVisible = false
+                            diableHelper2Timer.stop()
+                        }
                     }
                 }
                 RowLayout {
