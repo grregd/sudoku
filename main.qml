@@ -16,7 +16,6 @@ ApplicationWindow {
 //    visibility: "FullScreen"
     title: qsTr("Game of Sudoku")
 
-    property var hintCountLeft: 3
     property var wrongTriesCount: 0
     property var theSize: 39
 
@@ -210,6 +209,7 @@ ApplicationWindow {
                         checked: false
                     }
                     CountedButton {
+                        id: buttonHelpers2
                         title: qsTr("Pomoce 2")
                         checked: gameOfSudokuModel.helpersVisible
                         onPressed: {
@@ -231,23 +231,28 @@ ApplicationWindow {
                         onPressed: {
                             if (!gameOfSudokuModel.showHint())
                             {
-                                ++count;
+                                ++currentCount;
                             }
-                            if (count == 0)
+                            if (currentCount == 0)
                                 enabled = false;
                         }
                     }
                     Button {
                         text: qsTr("Nowa gra")
                         onClicked: {
-                            hintCountLeft = 3
                             wrongTriesCount = 0
                             timeElapsed.value = 0
+
                             buttonSolve.enabled = true
+                            buttonSolve.reset()
+
                             buttonHints.enabled = true
-                            buttonHints.text = qsTr("Podpowiedz") + " (" + hintCountLeft + ")"
+                            buttonHints.reset()
+
                             gameOfSudokuModel.newBoard()
                             gameTimer.running = true;
+
+                            buttonHelpers2.reset()
                         }
                     }
                     CountedButton {

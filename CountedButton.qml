@@ -9,22 +9,26 @@ Button
     property int delta: 1
     property int alarmValue
 
+    property int currentCount: count
+
     signal alarm;
 
+    function reset() { currentCount = count }
+
     function updateText() {
-        text = title;
-        if (count > 0) {
-            text += " (" + count + ")";
+        text = title
+        if (currentCount > 0) {
+            text = title + " (" + currentCount + ")";
         }
     }
 
     onTitleChanged: updateText()
 
-    onCountChanged: updateText()
+    onCurrentCountChanged: updateText()
 
     onPressed: {
-        count += delta
-        if (count === alarmValue)
+        currentCount += delta
+        if (currentCount === alarmValue)
             alarm();
     }
 }
