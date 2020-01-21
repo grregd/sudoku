@@ -51,15 +51,6 @@ ApplicationWindow {
         }
     }
 
-    Timer {
-        id: diableHelper2Timer
-        interval: 3000
-        running: false
-        repeat: false
-
-        onTriggered: gameOfSudokuModel.helpersVisible = false
-    }
-
     TableView {
         id: tableView
         anchors.fill: parent
@@ -225,11 +216,9 @@ ApplicationWindow {
                         checked: gameOfSudokuModel.helpersVisible
                         onPressed: {
                             gameOfSudokuModel.helpersVisible = true
-                            diableHelper2Timer.start()
                         }
                         onReleased: {
                             gameOfSudokuModel.helpersVisible = false
-                            diableHelper2Timer.stop()
                         }
                     }
                 }
