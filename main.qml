@@ -181,8 +181,7 @@ ApplicationWindow {
                             }
 
                             function updateState() {
-                                text.enabled =
-                                        text.visible =
+                                this.enabled = text.visible =
                                         !gameOfSudokuModel.hasAllNumbers(calcIndex()+1)
                             }
                             MouseArea {
