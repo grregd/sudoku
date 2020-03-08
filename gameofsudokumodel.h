@@ -21,11 +21,14 @@ class GameOfSudokuModel: public QAbstractTableModel
 
     Q_PROPERTY(bool helpersVisible MEMBER m_helpersVisible NOTIFY onhelpersVisibleChanged)
 
+    Q_PROPERTY(unsigned numberOfRevealed READ getNumberOfRevealed NOTIFY numberOfRevealedChanged)
+
     Q_ENUMS(Roles)
 
 signals:
     void wrongTry();
     void gameSolved();
+    void numberOfRevealedChanged();
 
 public slots:
     void onhelpersVisibleChanged();
@@ -58,6 +61,8 @@ public:
                  int role = Qt::EditRole) override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+
+    unsigned getNumberOfRevealed();
 
     Q_INVOKABLE void newBoard();
     Q_INVOKABLE void solve(/*std::function<void(int, int, GameOfSudoku::GridData::value_type)> tryCallback

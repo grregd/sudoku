@@ -178,6 +178,7 @@ void GameOfSudokuModel::newBoard()
     }
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
+    emit numberOfRevealedChanged();
 }
 
 //std::thread t;
@@ -201,6 +202,7 @@ void GameOfSudokuModel::solve(/*std::function<void (int, int, GameOfSudoku::Grid
     }
 //    );
     emit dataChanged(index(0, 0), index(9-1, 9-1));
+    emit numberOfRevealedChanged();
 }
 
 void GameOfSudokuModel::selectCell(const QVariant & indexValue)
@@ -222,6 +224,7 @@ bool GameOfSudokuModel::showHint()
     m_game.at(row, col) = m_gameSolution.at(row, col);
 
     emit dataChanged(index(row, col), index(row, col));
+    emit numberOfRevealedChanged();
 
     return true;
 }
@@ -239,6 +242,7 @@ void GameOfSudokuModel::insert(const QVariant &nativeText)
     m_game.at(row, col) = static_cast<GameOfSudoku::GridData::value_type>(nativeText.toInt());
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
+    emit numberOfRevealedChanged();
 
     if (nativeText.toInt() != 0 &&
         nativeText.toInt() != m_gameSolution.at(row, col))
@@ -271,6 +275,19 @@ bool GameOfSudokuModel::hasAllNumbers(int number)
 {
     return m_game.boardHasValue(
                 static_cast<GameOfSudoku::GridData::value_type>(number));
+}
+
+unsigned GameOfSudokuModel::getNumberOfRevealed()
+{
+    using T = GameOfSudoku::GridData::size_type;
+
+    unsigned result = 0u;
+    for (T r = 0; r < 9; ++r)
+        for (T c = 0; c < 9; ++c)
+            if (m_game.at(r, c) == m_gameSolution.at(r, c))
+                ++result;
+
+    return result;
 }
 
 void GameOfSudokuModel::moveLeft()

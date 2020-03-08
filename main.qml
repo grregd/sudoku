@@ -20,7 +20,6 @@ ApplicationWindow {
     property var theSize: 39
 
     onWidthChanged: {
-        console.log("onWidthChanged")
         theSize = width/9-1
         tableView.forceLayout()
     }
@@ -56,7 +55,6 @@ ApplicationWindow {
         anchors.fill: parent
 
         columnWidthProvider: function (column) {
-            console.log("columnWidthProvider: ", column, theSize)
             return theSize;
         }
 
@@ -181,7 +179,7 @@ ApplicationWindow {
                             }
 
                             function updateState() {
-                                this.enabled = text.visible =
+                                return this.enabled = text.visible =
                                         !gameOfSudokuModel.hasAllNumbers(calcIndex()+1)
                             }
                             MouseArea {
@@ -219,6 +217,10 @@ ApplicationWindow {
                         onReleased: {
                             gameOfSudokuModel.helpersVisible = false
                         }
+                    }
+                    Text {
+                        id: progressText
+                        text:gameOfSudokuModel.numberOfRevealed + " / 81"
                     }
                 }
                 RowLayout {
