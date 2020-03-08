@@ -6,6 +6,8 @@
 #include <random>
 #include <sstream>
 #include <stdexcept>
+#include <chrono>
+
 
 //#include <QStringList>
 
@@ -119,8 +121,10 @@ bool BoardGenerator::tryGenerateTest(int toRemove) {
 bool BoardGenerator::tryGenerate101computing(int toRemove) {
   //    qDebug() << __FUNCTION__;
   srand(time(nullptr));
+
+  auto stopTime = time(nullptr) + 10;
   int attempts = 50;
-  while (attempts > 0 && toRemove > 0) {
+  while (attempts > 0 && toRemove > 0 && time(nullptr) < stopTime) {
     GridData::size_type cellNum = 0;
     while (m_grid[cellNum = rand() % 81] == 0)
       ;
