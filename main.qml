@@ -10,6 +10,7 @@ import "."
 
 ApplicationWindow {
     id: mainWin
+    Accessible.name: "Game of Sudoku"
     visible: true
     width: 540
     height: 760
