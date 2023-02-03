@@ -34,3 +34,17 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     gameofsudoku.h \
     gameofsudokumodel.h
+
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/build.gradle \
+    android/gradle.properties \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew \
+    android/gradlew.bat \
+    android/res/values/libs.xml
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+ANDROID_TARGET_SDK_VERSION = 31
+ANDROID_ABIS += arm64-v8a armeabi-v7a
