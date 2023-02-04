@@ -143,28 +143,42 @@ Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &/*index*/) const
 
 void GameOfSudokuModel::newBoard()
 {
-    QFile file(":/1000sudoku_plain.txt");
-    if (file.open(QFile::ReadOnly)) {
-        srand(time(NULL));
-        QTextStream sudokus(&file);
-        sudokus.seek(82*(rand()%999));
-        QString s = sudokus.readLine();
-        m_game.readShort(s.toStdString());
+    srand(time(NULL));
+    auto offset = 82*(rand()%999);
+    {
+        QFile file(":/1000sudoku_plain.txt");
+        if (file.open(QFile::ReadOnly)) {
+            QTextStream sudokus(&file);
+            sudokus.seek(offset);
+            QString s = sudokus.readLine();
+            m_gameOrigin.readShort(s.toStdString());
+        }
     }
+
+    {
+        QFile file(":/1000sudoku_solutions.txt");
+        if (file.open(QFile::ReadOnly)) {
+            QTextStream sudokus(&file);
+            sudokus.seek(offset);
+            QString s = sudokus.readLine();
+            m_gameSolution.readShort(s.toStdString());
+        }
+    }
+    m_game = m_gameOrigin;
+
 //    m_game.generateBoard(20);
 
-    m_gameOrigin = m_game;
-    m_gameSolution = m_game;
+//    m_gameOrigin = m_game;
+//    m_gameSolution = m_game;
 
-
-    std::vector<GameOfSudoku::GridData> solutions;
-    solutions.reserve(1);
-    m_gameSolution.solve(solutions);
-    if (solutions.size() != 1)
-    {
-        throw std::runtime_error("something went horribly wrong");
-    }
-    m_gameSolution = GameOfSudoku(solutions.front());
+//    std::vector<GameOfSudoku::GridData> solutions;
+//    solutions.reserve(1);
+//    m_gameSolution.solve(solutions);
+//    if (solutions.size() != 1)
+//    {
+//        throw std::runtime_error("something went horribly wrong");
+//    }
+//    m_gameSolution = GameOfSudoku(solutions.front());
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
     emit numberOfRevealedChanged();

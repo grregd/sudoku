@@ -32,6 +32,7 @@ public:
   void read(const std::string &board);
 
   static std::string print(const GridData &grid, bool pretty = false);
+  static std::string printShort(const GameOfSudoku::GridData &grid);
   static std::string printFlat(const GridData &grid);
 
   GridData::value_type at(GridData::size_type row,

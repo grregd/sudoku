@@ -405,6 +405,17 @@ std::string GameOfSudoku::print(const GameOfSudoku::GridData &grid, bool pretty)
     return result;
 }
 
+std::string GameOfSudoku::printShort(const GameOfSudoku::GridData &grid)
+{
+    std::string result;
+    result.resize(81);
+    std::transform(grid.begin(), grid.end(),
+                   std::begin(result),
+                   [](const auto & d) { return '0' + d; } );
+    return result;
+}
+
+
 std::string GameOfSudoku::printFlat(const GameOfSudoku::GridData &grid)
 {
     return std::accumulate(grid.begin(), grid.end(), std::string(),

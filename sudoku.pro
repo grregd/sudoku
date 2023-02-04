@@ -48,3 +48,6 @@ DISTFILES += \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 ANDROID_TARGET_SDK_VERSION = 31
 ANDROID_ABIS += arm64-v8a armeabi-v7a
+
+SUBDIRS += generate_solutions \
+    generate_solutions/generate_solutions.pro
