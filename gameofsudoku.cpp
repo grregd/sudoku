@@ -12,10 +12,7 @@
 #include <chrono>
 
 
-//#include <QStringList>
-
 #include <QDebug>
-#include <QFile>
 
 std::vector<GameOfSudoku::GridData::size_type> randomCells()
 {
@@ -303,19 +300,6 @@ GameOfSudoku::GameOfSudoku(const GameOfSudoku::GridData &initialGrid)
     : m_grid(initialGrid) {}
 
 bool GameOfSudoku::generateBoard(int numberOfClues) {
-    QFile file(":/1000sudoku_plain.txt");
-    if (file.open(QFile::ReadOnly)) {
-        QTextStream sudokus(&file);
-        sudokus.seek(82*(rand()%999));
-        QString s = sudokus.readLine();
-        readShort(s.toStdString());
-        return true;
-    }
-
-    readShort("000000000000904000094006020070050060009080000002003504000070040000000036780000000");
-
-    return true;
-
 //    generateManyBoards(numberOfClues);
   BoardGenerator generator;
   if (!generator.generate(numberOfClues)) {

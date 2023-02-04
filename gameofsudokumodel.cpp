@@ -2,6 +2,7 @@
 
 #include <thread>
 
+#include <QFile>
 #include <QDebug>
 
 class IndexAdapter
@@ -142,40 +143,28 @@ Qt::ItemFlags GameOfSudokuModel::flags(const QModelIndex &/*index*/) const
 
 void GameOfSudokuModel::newBoard()
 {
-//    for (auto probes = 1000; probes > 0; --probes)
-    {
-//        qDebug() << "probe " << probes;
-
-        m_game.generateBoard(20);
-
-//        if (!m_game.generateBoard(25))
-//            continue;
-
-        m_gameOrigin = m_game;
-        m_gameSolution = m_game;
-
-//        std::vector<GameOfSudoku::GridData> solutions;
-//        solutions.reserve(1);
-//        try {
-//            m_gameSolution.solve(solutions);
-//        }
-//        catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
-//            if (probes <= 1)
-//                throw;
-//            else
-//                continue;
-//        }
-
-        std::vector<GameOfSudoku::GridData> solutions;
-        solutions.reserve(1);
-        m_gameSolution.solve(solutions);
-        if (solutions.size() != 1)
-        {
-            throw std::runtime_error("something went horribly wrong");
-        }
-        m_gameSolution = GameOfSudoku(solutions.front());
-//        break;
+    QFile file(":/1000sudoku_plain.txt");
+    if (file.open(QFile::ReadOnly)) {
+        srand(time(NULL));
+        QTextStream sudokus(&file);
+        sudokus.seek(82*(rand()%999));
+        QString s = sudokus.readLine();
+        m_game.readShort(s.toStdString());
     }
+//    m_game.generateBoard(20);
+
+    m_gameOrigin = m_game;
+    m_gameSolution = m_game;
+
+
+    std::vector<GameOfSudoku::GridData> solutions;
+    solutions.reserve(1);
+    m_gameSolution.solve(solutions);
+    if (solutions.size() != 1)
+    {
+        throw std::runtime_error("something went horribly wrong");
+    }
+    m_gameSolution = GameOfSudoku(solutions.front());
 
     emit dataChanged(index(0, 0), index(9-1, 9-1));
     emit numberOfRevealedChanged();
