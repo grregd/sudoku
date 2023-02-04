@@ -78,7 +78,7 @@ ApplicationWindow {
                 Text {
                     text: model.value ? model.value : "";
                     color: model.textColor
-                    font.pointSize: helpers1.checked && model.sameValue ? 0.9*theSize : 0.8*theSize;
+                    font.pixelSize: 0.8*theSize
                     font.bold: helpers1.checked && model.sameValue
                     anchors.centerIn: parent
                 }
@@ -154,7 +154,7 @@ ApplicationWindow {
             RowLayout {
                 Layout.margins: 10
                 Grid {
-                    anchors.fill: parent
+//                    anchors.fill: parent
                     rows: 2; columns: 10; spacing: 4
                     Repeater {
                         id: numbersButtonsRepeater
@@ -167,7 +167,7 @@ ApplicationWindow {
                                 enabled: parent.updateState()
                                 visible: enabled
                                 text: calcIndex() == 9 ? "0" : calcIndex()+1
-                                font.pointSize: 32-10
+                                font.pixelSize: 0.8*parent.height
                                 font.bold: true
                                 anchors.centerIn: parent
                             }
