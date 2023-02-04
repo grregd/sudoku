@@ -23,13 +23,16 @@ public:
   GameOfSudoku(const GameOfSudoku::GridData &initialGrid);
 
   bool generateBoard(int numberOfClues);
+  void generateManyBoards(int numberOfClues);
   void solve(
       std::vector<GameOfSudoku::GridData> &solutions,
       TryCallbackType tryCallback = [](int, int, GridData::value_type) {});
   std::string print();
+  void readShort(const std::string &board);
   void read(const std::string &board);
 
-  static std::string print(const GridData &grid);
+  static std::string print(const GridData &grid, bool pretty = false);
+  static std::string printFlat(const GridData &grid);
 
   GridData::value_type at(GridData::size_type row,
                           GridData::size_type col) const;

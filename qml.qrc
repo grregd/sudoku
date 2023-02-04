@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>CountedButton.qml</file>
+        <file>10_5sudoku_plain.txt</file>
+        <file>1000sudoku_plain.txt</file>
     </qresource>
 </RCC>

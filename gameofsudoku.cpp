@@ -1,9 +1,12 @@
 #include "gameofsudoku.h"
 
+#include <algorithm>
 #include <ctime>
+#include <unordered_set>
 #include <list>
 #include <numeric>
 #include <random>
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <chrono>
@@ -11,7 +14,21 @@
 
 //#include <QStringList>
 
-//#include <QDebug>
+#include <QDebug>
+#include <QFile>
+
+std::vector<GameOfSudoku::GridData::size_type> randomCells()
+{
+    std::vector<GameOfSudoku::GridData::size_type> result(81);
+    std::iota(result.begin(), result.end(), 0);
+    std::random_device rd;
+    std::mt19937 g(rd());
+    bool seeded [[maybe_unused]] = ((void)g.seed(time(nullptr)), true);
+    std::shuffle(result.begin(), result.end(), g);
+
+    return result;
+}
+
 
 class BoardGenerator {
 public:
@@ -34,16 +51,10 @@ private:
 
 static std::vector<GameOfSudoku::GridData::size_type> HASH(81);
 static std::list<GameOfSudoku::GridData::size_type> removed;
+
 bool BoardGenerator::generate(int cluesCount) {
   removed.clear();
-  std::iota(HASH.begin(), HASH.end(), 0);
-
-  std::random_device rd;
-  std::mt19937 g(rd());
-  g.seed(time(nullptr));
-  std::shuffle(HASH.begin(), HASH.end(), g);
-
-  //    std::random_shuffle(HASH.begin(), HASH.end());
+  HASH = randomCells();
 
   m_grid.fill(0);
 
@@ -108,7 +119,8 @@ bool BoardGenerator::tryGenerateTest(int toRemove) {
       GameOfSudoku::solve(tmp, solutions);
       if (solutions.size() == 1)
         return true;
-    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
+    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded &e) {
+        qDebug() << "GameOfSudoku::MaxNumberOfSolutionExceeded: " << e.what();
     }
   } while (next_combination(sequence.begin(), sequence.end(), 81));
 
@@ -119,29 +131,58 @@ bool BoardGenerator::tryGenerateTest(int toRemove) {
 }
 
 bool BoardGenerator::tryGenerate101computing(int toRemove) {
-  //    qDebug() << __FUNCTION__;
-  srand(time(nullptr));
 
-  auto stopTime = time(nullptr) + 10;
-  int attempts = 50;
-  while (attempts > 0 && toRemove > 0 && time(nullptr) < stopTime) {
-    GridData::size_type cellNum = 0;
-    while (m_grid[cellNum = rand() % 81] == 0)
-      ;
+  GridData originGrid = m_grid;
+
+  auto cellsNotTried = randomCells();
+  std::unordered_set<GridData::size_type> cellsTried;
+
+  auto stopTime = time(nullptr) + 20;
+  int attempts = 500000;
+  bool nooutofattempts = true;
+  bool notimeout = true;
+
+  while ((nooutofattempts = (attempts > 0)) && toRemove > 0 &&
+         (notimeout = (time(nullptr) < stopTime)) /*&&
+         (cellsTried.size() < 81)*/)
+  {
+    if (cellsTried.size() == 81) {
+      auto cellNumRevert = rand()%81;
+      while (m_grid[cellNumRevert] == 0)
+          cellNumRevert = rand() % 81;
+      if (cellNumRevert == 0)
+          qDebug() << "0";
+      qDebug() << "reverting random cell: " << cellNumRevert;
+      cellsTried.erase(cellNumRevert);
+      cellsNotTried.push_back(cellNumRevert);
+      if (m_grid[cellNumRevert] == 0)
+          ++toRemove;
+      m_grid[cellNumRevert] = originGrid[cellNumRevert];
+    }
+
+    qDebug() << "number of cells to remove: " << toRemove;
+    auto cellNum = cellsNotTried.back();
+    cellsNotTried.pop_back();
+//    while (m_grid[cellNum = rand() % 81] == 0 || cellsTried.find(cellNum) != cellsTried.end())
+//        qDebug() << "trying to find cell";
+//      ;
+    cellsTried.insert(cellNum);
+    qDebug() << "removing cell: " << cellNum << ". cellsTried.size(): " << cellsTried.size();
 
     GridData::value_type backup = m_grid[cellNum];
     m_grid[cellNum] = 0;
 
-    auto tmp{m_grid};
-    std::vector<GameOfSudoku::GridData> solutions;
-    solutions.reserve(1);
     bool solved = false;
     try {
+      auto tmp{m_grid};
+      std::vector<GameOfSudoku::GridData> solutions;
+      solutions.reserve(1);
       GameOfSudoku::solve(tmp, solutions);
       if (solutions.size() == 1) {
         solved = true;
       }
-    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
+    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded &e) {
+      qDebug() << "multiple solutions";
       solved = false;
     }
 
@@ -154,6 +195,10 @@ bool BoardGenerator::tryGenerate101computing(int toRemove) {
       --attempts;
     }
   }
+
+  if (!notimeout) qDebug() << "timeout";
+  if (!nooutofattempts) qDebug() << "out of attempts";
+  if (cellsTried.size() == 81) qDebug() << "all cells checked";
 
   //    qDebug() << __FUNCTION__ << "attempts left: " << attempts << "to remove
   //    left: " << toRemove;
@@ -202,7 +247,8 @@ bool BoardGenerator::tryGenerate(int toRemove) {
         }
       }
       //            break;
-    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
+    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded &e) {
+      qDebug() << "multiple solutions";
       break;
     }
   }
@@ -214,7 +260,7 @@ bool BoardGenerator::tryGenerate(int toRemove) {
   return false;
 }
 
-bool BoardGenerator::tryGenerate0(int cluesCount) {
+bool BoardGenerator::tryGenerate0(int cluesCount [[maybe_unused]]) {
   std::vector<GridData::size_type> occupiedCells;
   for (auto i = m_grid.begin(); i < m_grid.end(); ++i) {
     if (*i) {
@@ -228,8 +274,8 @@ bool BoardGenerator::tryGenerate0(int cluesCount) {
   g.seed(time(nullptr));
   std::shuffle(occupiedCells.begin(), occupiedCells.end(), g);
 
-  GridData::size_type saveCellIndex;
-  GridData::value_type saveCellValue;
+  GridData::size_type saveCellIndex = 0;
+  GridData::value_type saveCellValue = 0;
   while (!occupiedCells.empty()) {
     saveCellIndex = occupiedCells.back();
     saveCellValue = m_grid[occupiedCells.back()];
@@ -238,7 +284,8 @@ bool BoardGenerator::tryGenerate0(int cluesCount) {
     std::vector<GridData> solutions;
     try {
       GameOfSudoku::solve(m_grid, solutions);
-    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded e) {
+    } catch (GameOfSudoku::MaxNumberOfSolutionExceeded &e) {
+      qDebug() << "GameOfSudoku::MaxNumberOfSolutionExceeded: " << e.what();
       return false;
     }
 
@@ -256,6 +303,20 @@ GameOfSudoku::GameOfSudoku(const GameOfSudoku::GridData &initialGrid)
     : m_grid(initialGrid) {}
 
 bool GameOfSudoku::generateBoard(int numberOfClues) {
+    QFile file(":/1000sudoku_plain.txt");
+    if (file.open(QFile::ReadOnly)) {
+        QTextStream sudokus(&file);
+        sudokus.seek(82*(rand()%999));
+        QString s = sudokus.readLine();
+        readShort(s.toStdString());
+        return true;
+    }
+
+    readShort("000000000000904000094006020070050060009080000002003504000070040000000036780000000");
+
+    return true;
+
+//    generateManyBoards(numberOfClues);
   BoardGenerator generator;
   if (!generator.generate(numberOfClues)) {
     m_grid = generator.board();
@@ -274,17 +335,33 @@ bool GameOfSudoku::generateBoard(int numberOfClues) {
   std::vector<GameOfSudoku::GridData> solutions;
   solve(solutions);
 
-  std::vector<GridData::size_type> toRemove(81);
-  std::iota(toRemove.begin(), toRemove.end(), 1);
-  std::random_device rd;
-  std::mt19937 g(rd());
-  g.seed(time(nullptr));
-  std::shuffle(toRemove.begin(), toRemove.end(), g);
+  auto toRemove = randomCells();
 
   auto toLeave = numberOfClues;
   toRemove.erase(toRemove.end() - toLeave, toRemove.end());
   for (auto index : toRemove)
-    m_grid[index] = 0;
+      m_grid[index] = 0;
+}
+
+void GameOfSudoku::generateManyBoards(int numberOfClues)
+{
+    std::ofstream output("sudoku_data.txt", std::ios_base::app);
+    BoardGenerator generator;
+    while (true) {
+        generator.generate(numberOfClues);
+        m_grid = generator.board();
+
+        std::string line = std::to_string(81 - std::count(m_grid.begin(), m_grid.end(), 0)) + " ";
+        const auto chalange = printFlat(m_grid);
+
+        std::vector<GameOfSudoku::GridData> _;
+        solve(m_grid, _);
+        line += printFlat(m_grid).c_str();
+
+        line += std::string(" -> ") + chalange;
+
+        output << line.c_str() << std::endl;
+    }
 }
 
 void GameOfSudoku::solve(std::vector<GameOfSudoku::GridData> &solutions,
@@ -293,6 +370,13 @@ void GameOfSudoku::solve(std::vector<GameOfSudoku::GridData> &solutions,
 }
 
 std::string GameOfSudoku::print() { return print(m_grid); }
+
+void GameOfSudoku::readShort(const std::string &board)
+{
+    std::transform(board.begin(), board.end(),
+                   std::begin(m_grid),
+                   [](const auto & c) { return c - '0'; } );
+}
 
 void GameOfSudoku::read(const std::string &board) {
   std::istringstream iss(board);
@@ -313,21 +397,36 @@ void GameOfSudoku::read(const std::string &board) {
   //    }
 }
 
-std::string GameOfSudoku::print(const GameOfSudoku::GridData &grid) {
-  std::string result;
-  for (GridData::size_type r = 0; r < 9; ++r) {
-    std::string rowStr;
-    for (GridData::size_type c = 0; c < 9; ++c) {
-      if (grid[r * 9 + c] != 0)
-        rowStr += ' ' + std::to_string(grid[r * 9 + c]) + ' ';
-      else
-        rowStr += " _ ";
+std::string GameOfSudoku::print(const GameOfSudoku::GridData &grid, bool pretty)
+{
+    std::string result;
+    for (GridData::size_type r = 0; r < 9; ++r) {
+        std::string rowStr;
+
+        if (pretty && (r == 3 || r == 6))
+            rowStr += "----------+-----------+----------\n";
+
+        for (GridData::size_type c = 0; c < 9; ++c) {
+            if (pretty && (c == 3 || c == 6))
+                rowStr += " | ";
+            if (grid[r * 9 + c] != 0)
+                rowStr += ' ' + std::to_string(grid[r * 9 + c]) + ' ';
+            else
+                rowStr += " _ ";
+        }
+
+        result += '\n' + rowStr;
     }
 
-    result += '\n' + rowStr;
-  }
+    return result;
+}
 
-  return result;
+std::string GameOfSudoku::printFlat(const GameOfSudoku::GridData &grid)
+{
+    return std::accumulate(grid.begin(), grid.end(), std::string(),
+            [](auto init, const auto value){
+                return std::move(init) + " " + std::to_string(value);
+    });
 }
 
 GameOfSudoku::GridData::value_type
